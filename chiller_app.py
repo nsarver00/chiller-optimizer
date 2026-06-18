@@ -61,7 +61,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Utilization (%) -->", round(utilization, 2), "%")
 
 # Load CSV
-df = pd.read_csv(Chiller_csv_1.csv")
+df = pd.read_csv("Chiller_csv_1.csv")
 df.columns = df.columns.str.strip()
 chillers = df.to_dict(orient="records")
 
