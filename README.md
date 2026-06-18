@@ -1,1 +1,2 @@
 This project is a Python-based HVAC chiller plant optimization tool that evaluates all possible chiller combinations to meet a building’s cooling load. It selects the group with the lowest total power consumption while checking demand is satisfied. The model shows basic optimization, energy modeling, and HVAC system design logic.
+https://chiller-optimizer-t5y8nwwe4kgvms3q8kqiih.streamlit.app/
