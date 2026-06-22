@@ -52,7 +52,7 @@ def building_load_calc(rooms):
         })
     building_load_tons = sum(room["tons"] for room in room_btu_list)
     for room in room_btu_list:
-        room_percent_load = room["tons"] / building_load_tons
+        room_percent_load = room["tons"] / building_load_tons if building_load_tons > 0 else 0
         room["room_percent_load"] = room_percent_load
     return building_load_tons, room_btu_list
 
