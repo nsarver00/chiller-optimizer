@@ -170,8 +170,8 @@ else:
     results = []
 
     for chiller in best_group:
-        kw_chiller = chiller["tons"] * chiller["eff"]
         percent_of_load = chiller["tons"] / total_tons
+        kw_chiller = best_kw * percent_of_load
         cost_chiller = kw_chiller * 24 * costperkwh
 
         results.append({
