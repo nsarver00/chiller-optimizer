@@ -206,16 +206,21 @@ else:
         "btu_sqft": avg_btu_sqft,
         "room_percent_load":"100%"
     })
+
+    
     df_results_chillers = pd.DataFrame(results_chillers)
     df_room_btu_list = pd.DataFrame(room_btu_list)
-    
+
+    st.subheader("Running Chiller Data")
     st.dataframe(df_results_chillers)
+
+    st.subheader("Room Load Data")
     st.dataframe(df_room_btu_list)
     
-    st.subheader("Running Chiller Data")
+  
     csv = df_results_chillers.to_csv(index=False)
     st.download_button("Download Results CSV", csv, "results_chillers.csv")
     
-    st.subheader("Room Load Data")
+   
     csv = df_room_btu_list.to_csv(index=False)
     st.download_button("Download Results CSV", csv, "room_loads.csv")
