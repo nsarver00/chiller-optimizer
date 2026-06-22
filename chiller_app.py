@@ -129,7 +129,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
-        st.write("Running:", chiller["name"], "-->", chiller["tons"], "tons ,", chiller["eff"], "kW/ton")
+        st.write("Running:", chiller["name"], "-->", chiller["tons"], "tons ,", chiller["kw_per_ton"], "kW/ton")
 
     st.write(len(best_group), "Chillers Running")
     st.write("Total kW -->", round(best_kw, 2), "kW")
@@ -176,7 +176,7 @@ else:
         cost_chiller_month = cost_chiller_day * 30
         results.append({
             "name": chiller["name"],
-            "eff": chiller["eff"],
+            "kw_per_ton": chiller["kw_per_ton"],
             "tons": chiller["tons"],
             "kw_usage_day": round(kw_chiller_day,2),
             "percent_load": round(percent_of_load,2),
@@ -190,7 +190,7 @@ else:
 
     results.append({
         "name": "Total",
-        "eff": np.mean([chiller["eff"] for chiller in best_group]),
+        "kw_per_ton": np.mean([chiller["kw_per_ton"] for chiller in best_group]),
         "tons": np.mean([chiller["tons"] for chiller in best_group]),
         "kw_usage_day": round(total_kw,2),
         "percent_load": round(total_percent,2),
