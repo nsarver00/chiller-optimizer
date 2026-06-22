@@ -204,7 +204,7 @@ else:
         "tons": total_tons,
         "btu": total_btu,
         "btu_sqft": avg_btu_sqft,
-        "room_percent_load":100%
+        "room_percent_load":"100%"
     })
     df_results_chillers = pd.DataFrame(results_chillers)
     df_room_btu_list = pd.DataFrame(room_btu_list)
