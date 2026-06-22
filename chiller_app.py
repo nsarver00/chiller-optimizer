@@ -142,13 +142,10 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
 # ---------------- MAIN ----------------
 
 df_chillers = pd.read_csv("Chiller_06_22.csv")
-df_rooms = pd.read_csv("data_center_rooms_practice.csv") 
 
 df_chillers.columns = df_chillers.columns.str.strip()
-df_rooms.columns = df_rooms.columns.str.strip()
 
 chillers = df_chillers.to_dict(orient="records")
-rooms = df_rooms.to_dict(orient="records")
 
 rooms = room_maker()
 
