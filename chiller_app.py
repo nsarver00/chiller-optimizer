@@ -6,7 +6,30 @@ import numpy as np
 import streamlit as st
 
 st.title("Chiller Plant Optimizer")
+def room_maker():
+    num_rooms = st.number_input("Number of rooms?", min_value=1, step=1)
 
+    rooms = []
+
+    for i in range(int(num_rooms)):
+        st.subheader(f"Room {i+1}")
+
+        room_name = st.text_input(f"Room name {i}", key=f"name_{i}")
+        room_cfm = st.number_input(f"Room cfm {i}", key=f"cfm_{i}")
+        room_t_supply = st.number_input(f"Room t_supply {i}", key=f"supply_{i}")
+        room_t_return = st.number_input(f"Room t_return {i}", key=f"return_{i}")
+
+        rooms.append({
+            "name": room_name,
+            "cfm": room_cfm,
+            "t_supply": room_t_supply,
+            "t_return": room_t_return
+        })
+
+    return rooms
+
+if st.button("Print Rooms"):
+    st.write(rooms)
 costperkwh = st.number_input("Cost per kWh?")
 
 # Room cooling load calculator
@@ -126,6 +149,8 @@ df_rooms.columns = df_rooms.columns.str.strip()
 
 chillers = df_chillers.to_dict(orient="records")
 rooms = df_rooms.to_dict(orient="records")
+
+rooms = room_maker()
 
 building_load_tons, room_btu_list = building_load_calc(rooms)
 
