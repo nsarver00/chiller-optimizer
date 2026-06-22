@@ -166,9 +166,9 @@ else:
         "name": "Total",
         "eff": np.mean([chiller["eff"] for chiller in best_group]),
         "tons": np.mean([chiller["tons"] for chiller in best_group]),
-        "total_kw_usage": total_kw,
-        "total_percent": total_percent,
-        "total_daily_cost": total_cost
+        "kw_usage": total_kw,
+        "percent_load": total_percent,
+        "daily_cost": total_cost
     })
 
     df_results = pd.DataFrame(results)
