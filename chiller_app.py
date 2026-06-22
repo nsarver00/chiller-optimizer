@@ -37,7 +37,7 @@ def room_loads(cfm,t_supply,t_return,sq_ft):
     delta_t = t_return - t_supply
     btu = delta_t * 1.085 * cfm
     tons = btu / 12000
-    btu_sqft = btu / sq_ft
+    btu_sqft = btu / sq_ft if sq_ft > 0 else 0
     return btu,tons,btu_sqft
 
 def building_load_calc(rooms):
