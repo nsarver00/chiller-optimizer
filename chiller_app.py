@@ -118,8 +118,8 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
 
 # ---------------- MAIN ----------------
 
-df_chillers = pd.read_csv(r"C:\Users\nsarv\Downloads\Chiller_csv_1.csv")
-df_rooms = pd.read_csv(r"C:\Users\nsarv\Downloads\data_center_rooms_practice.csv")
+df_chillers = pd.read_csv("Chiller_csv_1.csv")
+df_rooms = pd.read_csv("data_center_rooms.csv") 
 
 df_chillers.columns = df_chillers.columns.str.strip()
 df_rooms.columns = df_rooms.columns.str.strip()
