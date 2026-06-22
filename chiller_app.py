@@ -201,7 +201,7 @@ else:
     })
     room_btu_list.append({
         "name": "Total",
-        "tons": total_tons,
+        "tons": building_load_tons,
         "btu": total_btu,
         "btu_sqft": avg_btu_sqft,
         "room_percent_load":"100%"
