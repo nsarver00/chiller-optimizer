@@ -1,0 +1,9 @@
+name ,cfm,t_supply,t_return,sqft
+office ,2500,55,75,400
+server_room,50000,55,90,200
+conference,1000,55,78,300
+warehouse,10000,55,82,1200
+break_room,1000,55,72,150
+front_lobby ,1250,55,75,250
+bathroom ,2000,55,78,100
+mechanical_room,5000,55,85,1000
