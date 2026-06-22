@@ -179,7 +179,7 @@ else:
             "eff": chiller["eff"],
             "tons": chiller["tons"],
             "kw_usage_day": round(kw_chiller_day,2),
-            "percent_load": round(percent_of_load,2)
+            "percent_load": round(percent_of_load,2),
             "daily_cost": round(cost_chiller_day,2),
             "monthly_cost": round(cost_chiller_month,2)
         })
