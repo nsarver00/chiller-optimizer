@@ -18,7 +18,7 @@ def room_maker():
         room_cfm = st.number_input(f"Room cfm {i}", key=f"cfm_{i}")
         room_t_supply = st.number_input(f"Room t_supply {i}", key=f"supply_{i}")
         room_t_return = st.number_input(f"Room t_return {i}", key=f"return_{i}")
-        room_sqft = st.number_input(f"Room sqft {i}", key=f"sqft_{i}")
+        room_sqft = st.number_input(f"Room sqft {i}", key=f"sq_ft_{i}")
         rooms.append({
             "name": room_name,
             "cfm": room_cfm,
