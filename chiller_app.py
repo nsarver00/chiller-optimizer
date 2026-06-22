@@ -175,7 +175,6 @@ else:
         cost_chiller_month = cost_chiller_day * 30
         results.append({
             "name": chiller["name"],
-            "kw_per_ton": chiller["kw_per_ton"],
             "tons": chiller["tons"],
             "kw_usage_day": round(kw_chiller_day,2),
             "percent_load": round(percent_of_load,2),
@@ -187,10 +186,10 @@ else:
     total_day_cost = sum(r["daily_cost"] for r in results)
     total_percent = sum(r["percent_load"] for r in results)
     total_month_cost = sum(r["monthly_cost"] for r in results)
+    avg_kw_per_ton =  np.mean([chiller["kw_per_ton"] for chiller in best_group])
     results.append({
         "name": "Total",
-        "kw_per_ton": np.mean([chiller["kw_per_ton"] for chiller in best_group]),
-        "tons": np.mean([chiller["tons"] for chiller in best_group]),
+        "tons": total_tons,
         "kw_usage_day": round(total_kw,2),
         "percent_load": round(total_percent,2),
         "daily_cost": round(total_day_cost,2),
