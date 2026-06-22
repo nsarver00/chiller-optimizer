@@ -108,12 +108,11 @@ def system_flags(total_tons, building_load):
 
 
 def iplv_lookup(load_pct):
-   for chiller in chillers:
-    iplv_table = {
-        0.25: 0.72,
-        0.50: 0.60,
-        0.75: 0.52,
-        1.00: 1.00
+iplv_table = {
+    0.25: 0.72,
+    0.50: 0.60,
+    0.75: 0.52,
+    1.00: 1.00
     }
 
     closest_load = min(
