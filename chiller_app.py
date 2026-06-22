@@ -193,7 +193,7 @@ else:
         "tons": np.mean([chiller["tons"] for chiller in best_group]),
         "kw_usage_day": round(total_kw,2),
         "percent_load": round(total_percent,2),
-        "daily_cost": round(total_cost,2),
+        "daily_cost": round(total_day_cost,2),
         "monthly_cost":round(total_month_cost,2)
     })
 
