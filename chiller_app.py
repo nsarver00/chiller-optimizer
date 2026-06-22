@@ -65,13 +65,11 @@ def optimize_chillers(building_load_tons, chillers):
 
             if total_tons >= building_load_tons:
                 percent_load = building_load_tons / total_tons
-                kw_per_ton = iplv_lookup(percent_load)
-
                 total_kw = 0
                 for chiller in group:
                     actual_kw_per_ton = chiller["kw_per_ton"] * iplv_lookup(percent_load)
                     load_chiller = chiller["tons"] * percent_load
-                    kw_chiller = load_chiller * kw_per_ton
+                    kw_chiller = load_chiller * actual_kw_per_ton
                     total_kw += kw_chiller
 
                 if total_kw < best_kw:
@@ -115,7 +113,7 @@ def iplv_lookup(load_pct):
         0.25: 0.72,
         0.50: 0.60,
         0.75: 0.52,
-        1.00: chiller["kw_per_ton"]
+        1.00: 1.00
     }
 
     closest_load = min(
