@@ -18,7 +18,7 @@ def room_maker():
         room_cfm = st.number_input(f"Room cfm {i}", key=f"cfm_{i}")
         room_t_supply = st.number_input(f"Room t_supply {i}", key=f"supply_{i}")
         room_t_return = st.number_input(f"Room t_return {i}", key=f"return_{i}")
-        room_sqft = st.number_input(f"Room t_return {i}", key=f"return_{i}")
+        room_sqft = st.number_input(f"Room sqft {i}", key=f"return_{i}")
         rooms.append({
             "name": room_name,
             "cfm": room_cfm,
@@ -184,10 +184,10 @@ else:
             "monthly_cost": round(cost_chiller_month,2)
         })
 
-    total_kw = sum(r["kw_usage_day"] for r in results)
-    total_day_cost = sum(r["daily_cost"] for r in results)
-    total_percent = sum(r["percent_load"] for r in results)
-    total_month_cost = sum(r["monthly_cost"] for r in results)
+    total_kw = sum(r["kw_usage_day"] for r in chiller_results)
+    total_day_cost = sum(r["daily_cost"] for r in chiller_results)
+    total_percent = sum(r["percent_load"] for r in chiller_results)
+    total_month_cost = sum(r["monthly_cost"] for r in chiller_results)
     avg_kw_per_ton =  np.mean([chiller["kw_per_ton"] for chiller in best_group])
     total_btu = sum(room["btu"] for room in room_btu_list)
     avg_btu_sqft =  np.mean([room["btu_sqft"] for room in room_btu_list])
