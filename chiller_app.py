@@ -69,6 +69,7 @@ def optimize_chillers(building_load_tons, chillers):
 
                 total_kw = 0
                 for chiller in group:
+                    actual_kw_per_ton = chiller["kw_per_ton"] * iplv_lookup(percent_load)
                     load_chiller = chiller["tons"] * percent_load
                     kw_chiller = load_chiller * kw_per_ton
                     total_kw += kw_chiller
