@@ -18,12 +18,13 @@ def room_maker():
         room_cfm = st.number_input(f"Room cfm {i}", key=f"cfm_{i}")
         room_t_supply = st.number_input(f"Room t_supply {i}", key=f"supply_{i}")
         room_t_return = st.number_input(f"Room t_return {i}", key=f"return_{i}")
-
+        room_sqft = st.number_input(f"Room t_return {i}", key=f"return_{i}")
         rooms.append({
             "name": room_name,
             "cfm": room_cfm,
             "t_supply": room_t_supply,
-            "t_return": room_t_return
+            "t_return": room_t_return,
+            "sq_ft": room_sqft
         })
 
     return rooms
@@ -32,27 +33,28 @@ def room_maker():
 costperkwh = st.number_input("Cost per kWh?")
 
 # Room cooling load calculator
-def room_loads(cfm, t_supply, t_return):
+def room_loads(cfm,t_supply,t_return,sq_ft):
     delta_t = t_return - t_supply
     btu = delta_t * 1.085 * cfm
     tons = btu / 12000
-    return btu, tons
-
+    btu_sqft = btu / sq_ft
+    return btu,tons,btu_sqft
 
 def building_load_calc(rooms):
     room_btu_list = []
-
     for room in rooms:
-        btu, tons = room_loads(room["cfm"], room["t_supply"], room["t_return"])
+        btu,tons,btu_sqft = room_loads(room["cfm"],room["t_supply"],room["t_return"],room["sq_ft"])
         room_btu_list.append({
-            "name": room["name"],
-            "btu": btu,
-            "tons": tons
+            "name":room["name"],
+            "btu":btu,
+            "tons":tons,
+            "btu_sqft": btu_sqft
         })
-
     building_load_tons = sum(room["tons"] for room in room_btu_list)
+    for room in room_btu_list:
+        room_percent_load = room["tons"] / building_load_tons
+        room["room_percent_load"] = room_percent_load
     return building_load_tons, room_btu_list
-
 
 # Chiller Optimizer
 def optimize_chillers(building_load_tons, chillers):
@@ -166,14 +168,14 @@ else:
     system_flags(total_tons, building_load_tons)
     print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons)
 
-    results = []
-
+    results_chillers = []
+    
     for chiller in best_group:
         percent_of_load = chiller["tons"] / total_tons
         kw_chiller_day = best_kw * percent_of_load
         cost_chiller_day = kw_chiller_day * 24 * costperkwh
         cost_chiller_month = cost_chiller_day * 30
-        results.append({
+        results_chillers.append({
             "name": chiller["name"],
             "tons": chiller["tons"],
             "kw_usage_day": round(kw_chiller_day,2),
@@ -187,7 +189,9 @@ else:
     total_percent = sum(r["percent_load"] for r in results)
     total_month_cost = sum(r["monthly_cost"] for r in results)
     avg_kw_per_ton =  np.mean([chiller["kw_per_ton"] for chiller in best_group])
-    results.append({
+    total_btu = sum(room["btu"] for room in room_btu_list)
+    avg_btu_sqft =  np.mean([room["btu_sqft"] for room in room_btu_list])
+    results_chillers.append({
         "name": "Total",
         "tons": total_tons,
         "kw_usage_day": round(total_kw,2),
@@ -195,9 +199,21 @@ else:
         "daily_cost": round(total_day_cost,2),
         "monthly_cost":round(total_month_cost,2)
     })
-
-    df_results = pd.DataFrame(results)
-    st.dataframe(df_results)
-
-    csv = df_results.to_csv(index=False)
+    room_btu_list.append({
+        "name": "Total",
+        "tons": total_tons,
+        "btu": total_btu
+        "btu_sqft": avg_btu_sqft,
+        "room_percent_load":100%
+    })
+    df_results_chillers = pd.DataFrame(results_chillers)
+    df_room_btu_list = pd.DataFrame(room_btu_list)
+    
+    st.dataframe(df_results_chillers)
+    st.dataframe(df_room_btu_list)
+    
+    csv = df_results_chillers.to_csv(index=False)
     st.download_button("Download Results CSV", csv, "chiller_results.csv")
+
+    csv = df_room_btu_list.to_csv(index=False)
+    st.download_button("Download Results CSV", csv, "room_loads.csv")
