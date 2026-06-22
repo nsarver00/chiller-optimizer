@@ -48,7 +48,7 @@ def building_load_calc(rooms):
             "name":room["name"],
             "btu":btu,
             "tons":tons,
-            "btu_sqft": btu_sqft
+            "btu_sqft": round(btu_sqft,2)
         })
     building_load_tons = sum(room["tons"] for room in room_btu_list)
     for room in room_btu_list:
@@ -203,7 +203,7 @@ else:
         "name": "Total",
         "tons": building_load_tons,
         "btu": total_btu,
-        "btu_sqft": avg_btu_sqft,
+        "btu_sqft": round(avg_btu_sqft,2),
         "room_percent_load":"100%"
     })
 
