@@ -138,13 +138,14 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Utilization (%) -->", round(utilization, 2), "%")
 
 
-# ---------------- MAIN ----------------
-
 df_chillers = pd.read_csv("Chiller_06_22.csv")
 
 df_chillers.columns = df_chillers.columns.str.strip()
 
 chillers = df_chillers.to_dict(orient="records")
+
+st.subheader("Chiller Data")
+st.dataframe(df_chillers)
 
 rooms = room_maker()
 
