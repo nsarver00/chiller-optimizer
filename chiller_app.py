@@ -184,7 +184,7 @@ else:
             "monthly_cost": round(cost_chiller_month,2)
         })
 
-    total_kw = sum(r["kw_usage"] for r in results)
+    total_kw = sum(r["kw_usage_day"] for r in results)
     total_cost = sum(r["daily_cost"] for r in results)
     total_percent = sum(r["percent_load"] for r in results)
 
