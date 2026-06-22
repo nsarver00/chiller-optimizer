@@ -184,10 +184,10 @@ else:
             "monthly_cost": round(cost_chiller_month,2)
         })
 
-    total_kw = sum(r["kw_usage_day"] for r in chiller_results)
-    total_day_cost = sum(r["daily_cost"] for r in chiller_results)
-    total_percent = sum(r["percent_load"] for r in chiller_results)
-    total_month_cost = sum(r["monthly_cost"] for r in chiller_results)
+    total_kw = sum(r["kw_usage_day"] for r in results_chillers)
+    total_day_cost = sum(r["daily_cost"] for r in results_chillers)
+    total_percent = sum(r["percent_load"] for r in results_chillers)
+    total_month_cost = sum(r["monthly_cost"] for r in results_chillers)
     avg_kw_per_ton =  np.mean([chiller["kw_per_ton"] for chiller in best_group])
     total_btu = sum(room["btu"] for room in room_btu_list)
     avg_btu_sqft =  np.mean([room["btu_sqft"] for room in room_btu_list])
@@ -213,7 +213,7 @@ else:
     st.dataframe(df_room_btu_list)
     
     csv = df_results_chillers.to_csv(index=False)
-    st.download_button("Download Results CSV", csv, "chiller_results.csv")
+    st.download_button("Download Results CSV", csv, "results_chillers.csv")
 
     csv = df_room_btu_list.to_csv(index=False)
     st.download_button("Download Results CSV", csv, "room_loads.csv")
