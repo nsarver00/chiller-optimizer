@@ -1,0 +1,9 @@
+name,tons,min_load,max_load,kw_per_ton,startup_kw
+chiller1,75,0.5,1,0.9,15
+chiller2,75,0.5,1,0.9,15
+chiller3,36,0.4,1,0.7,10
+chiller4,36,0.4,1,0.7,10
+chiller5,36,0.4,1,0.7,10
+chiller6,24,0.3,1,0.6,5
+chiller7,24,0.3,1,0.6,5
+chiller8,12,0.2,1,0.4,5
