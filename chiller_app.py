@@ -212,8 +212,10 @@ else:
     st.dataframe(df_results_chillers)
     st.dataframe(df_room_btu_list)
     
+    st.subheader("Running Chiller Data")
     csv = df_results_chillers.to_csv(index=False)
     st.download_button("Download Results CSV", csv, "results_chillers.csv")
-
+    
+    st.subheader("Room Load Data")
     csv = df_room_btu_list.to_csv(index=False)
     st.download_button("Download Results CSV", csv, "room_loads.csv")
