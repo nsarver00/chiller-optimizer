@@ -7,7 +7,7 @@ import streamlit as st
 import openmeteo_requests
 import requests_cache
 from retry_requests import retry
-
+import math
 st.title("Chiller Plant Optimizer")
 
 def room_maker():
@@ -74,6 +74,18 @@ hourly_dataframe = pd.DataFrame(data=hourly_data)
 
 costperkwh = st.number_input("Cost per kWh?")
 
+building_load_constant = []
+for i in range(len(hourly_dataframe)):
+    building_load_constant.append(18)
+hourly_dataframe["building_enthalpy"] = building_load_constant
+
+def calculate_enthalpy(dry_bulb, relative_h):
+    p_ws = 0.6108 * math.exp((17.27 * (dry_bulb - 32) * 5/9) / ((dry_bulb - 32) * 5/9 + 237.3))
+    p_w = (relative_h / 100) * p_ws
+    w = 0.62198 * p_w / (101.325 - p_w)
+    enthalpy = 0.24 * dry_bulb + w * (1061 + 0.444 * dry_bulb)
+    
+    return enthalpy
 
 def room_loads(cfm, t_supply, t_return, sq_ft):
     delta_t = t_return - t_supply
@@ -212,6 +224,29 @@ if st.button("Print Rooms"):
     st.write(rooms)
 
 building_load_tons, room_btu_list = building_load_calc(rooms)
+
+enthalpy_list = []
+
+for i in range(len(hourly_dataframe)):
+    db = hourly_dataframe.loc[i, "temperature_2m"]
+    rh = hourly_dataframe.loc[i, "relative_humidity_2m"]
+    
+    h = calculate_enthalpy(db, rh)
+    enthalpy_list.append(h)
+
+hourly_dataframe["outside_enthalpy"] = enthalpy_list
+
+economizer_key = []
+
+for i in range(len(hourly_dataframe)):
+    out_h = hourly_dataframe.loc[i, "outside_enthalpy"]
+    in_h = hourly_dataframe.loc[i, "building_enthalpy"]
+    if in_h > out_h:
+        economizer_key.append(.5)
+    else:
+        economizer_key.append(1)
+
+hourly_dataframe["economizer_key"] = economizer_key
 
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
 
