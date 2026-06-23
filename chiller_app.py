@@ -267,7 +267,7 @@ else:
     st.dataframe(df_room_btu_list)
 
 	st.subheader("Weather")
-	st.dataframe(monthly_dataframe)
+	st.dataframe(hourly_dataframe)
     
   
     csv = df_results_chillers.to_csv(index=False)
