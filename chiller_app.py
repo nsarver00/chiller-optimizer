@@ -9,6 +9,7 @@ import requests_cache
 from retry_requests import retry
 
 st.title("Chiller Plant Optimizer")
+
 def room_maker():
     num_rooms = st.number_input("Number of rooms?", min_value=1, step=1)
 
@@ -22,6 +23,7 @@ def room_maker():
         room_t_supply = st.number_input(f"Room t_supply {i}", key=f"supply_{i}")
         room_t_return = st.number_input(f"Room t_return {i}", key=f"return_{i}")
         room_sqft = st.number_input(f"Room sqft {i}", key=f"sq_ft_{i}")
+
         rooms.append({
             "name": room_name,
             "cfm": room_cfm,
@@ -32,89 +34,96 @@ def room_maker():
 
     return rooms
 
-# Setup the Open-Meteo API client with cache and retry on error
-cache_session = requests_cache.CachedSession('.cache', expire_after = -1)
-retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
-openmeteo = openmeteo_requests.Client(session = retry_session)
 
-# Make sure all required weather variables are listed here
-# The order of variables in hourly or daily is important to assign them correctly below
+# Setup Open-Meteo API client
+cache_session = requests_cache.CachedSession('.cache', expire_after=-1)
+retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
+openmeteo = openmeteo_requests.Client(session=retry_session)
+
 url = "https://archive-api.open-meteo.com/v1/archive"
 params = {
-	"latitude": 42.58,
-	"longitude": -85.36,
-	"start_date": "2026-06-05",
-	"end_date": "2026-06-07",
-	"hourly": ["temperature_2m", "relative_humidity_2m"],
-	"temperature_unit": "fahrenheit",
+    "latitude": 42.58,
+    "longitude": -85.36,
+    "start_date": "2026-06-05",
+    "end_date": "2026-06-07",
+    "hourly": ["temperature_2m", "relative_humidity_2m"],
+    "temperature_unit": "fahrenheit",
 }
-responses = openmeteo.weather_api(url, params = params)
 
-# Process first location. Add a for-loop for multiple locations or weather models
+responses = openmeteo.weather_api(url, params=params)
 response = responses[0]
-print(f"Coordinates: {response.Latitude()}°N {response.Longitude()}°E")
-print(f"Elevation: {response.Elevation()} m asl")
-print(f"Timezone difference to GMT+0: {response.UtcOffsetSeconds()}s")
 
-# Process hourly data. The order of variables needs to be the same as requested.
 hourly = response.Hourly()
 hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
 hourly_relative_humidity_2m = hourly.Variables(1).ValuesAsNumpy()
 
 hourly_data = {
-	"date": pd.date_range(
-		start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
-		end =  pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
-		freq = pd.Timedelta(seconds = hourly.Interval()),
-		inclusive = "left"
-	)
+    "date": pd.date_range(
+        start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
+        end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+        freq=pd.Timedelta(seconds=hourly.Interval()),
+        inclusive="left"
+    )
 }
 
 hourly_data["temperature_2m"] = hourly_temperature_2m
 hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
 
-hourly_dataframe = pd.DataFrame(data = hourly_data)
-
+hourly_dataframe = pd.DataFrame(data=hourly_data)
 
 
 costperkwh = st.number_input("Cost per kWh?")
 
-# Room cooling load calculator
-def room_loads(cfm,t_supply,t_return,sq_ft):
+
+def room_loads(cfm, t_supply, t_return, sq_ft):
     delta_t = t_return - t_supply
     btu = delta_t * 1.085 * cfm
     tons = btu / 12000
     btu_sqft = btu / sq_ft if sq_ft > 0 else 0
-    return btu,tons,btu_sqft
+    return btu, tons, btu_sqft
+
 
 def building_load_calc(rooms):
     room_btu_list = []
+
     for room in rooms:
-        btu,tons,btu_sqft = room_loads(room["cfm"],room["t_supply"],room["t_return"],room["sq_ft"])
+        btu, tons, btu_sqft = room_loads(
+            room["cfm"],
+            room["t_supply"],
+            room["t_return"],
+            room["sq_ft"]
+        )
+
         room_btu_list.append({
-            "name":room["name"],
-            "btu":btu,
-            "tons":tons,
-            "btu_sqft": round(btu_sqft,2)
+            "name": room["name"],
+            "btu": btu,
+            "tons": tons,
+            "btu_sqft": round(btu_sqft, 2)
         })
+
     building_load_tons = sum(room["tons"] for room in room_btu_list)
+
     for room in room_btu_list:
-        room_percent_load = room["tons"] / building_load_tons if building_load_tons > 0 else 0
-        room["room_percent_load"] = room_percent_load
+        room["room_percent_load"] = (
+            room["tons"] / building_load_tons if building_load_tons > 0 else 0
+        )
+
     return building_load_tons, room_btu_list
 
-# Chiller Optimizer
+
 def optimize_chillers(building_load_tons, chillers):
     best_kw = 10000000
     best_group = None
 
     for r in range(1, len(chillers) + 1):
         for group in combinations(chillers, r):
+
             total_tons = sum(chiller["tons"] for chiller in group)
 
             if total_tons >= building_load_tons:
                 percent_load = building_load_tons / total_tons
                 total_kw = 0
+
                 for chiller in group:
                     actual_kw_per_ton = chiller["kw_per_ton"] * iplv_lookup(percent_load)
                     load_chiller = chiller["tons"] * percent_load
@@ -162,7 +171,7 @@ def iplv_lookup(load_pct):
         0.50: 0.60,
         0.75: 0.52,
         1.00: 1.00
-        }
+    }
 
     closest_load = min(
         iplv_table.keys(),
@@ -176,7 +185,11 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
-        st.write("Running:", chiller["name"], "-->", chiller["tons"], "tons ,", chiller["kw_per_ton"], "kW/ton")
+        st.write(
+            "Running:", chiller["name"],
+            "-->", chiller["tons"], "tons ,",
+            chiller["kw_per_ton"], "kW/ton"
+        )
 
     st.write(len(best_group), "Chillers Running")
     st.write("Total kW -->", round(best_kw, 2), "kW")
@@ -187,9 +200,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
 
 
 df_chillers = pd.read_csv("Chiller_06_22.csv")
-
 df_chillers.columns = df_chillers.columns.str.strip()
-
 chillers = df_chillers.to_dict(orient="records")
 
 st.subheader("Chiller Data")
@@ -213,66 +224,8 @@ else:
 
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
+
     print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons)
 
-    results_chillers = []
-    
-    for chiller in best_group:
-        percent_of_load = chiller["tons"] / total_tons
-        kw_chiller_day = best_kw * percent_of_load
-        cost_chiller_day = kw_chiller_day * 24 * costperkwh
-        cost_chiller_month = cost_chiller_day * 30
-        results_chillers.append({
-            "name": chiller["name"],
-            "tons": chiller["tons"],
-            "kw_usage_day": round(kw_chiller_day,2),
-            "percent_load": round(percent_of_load,2),
-            "daily_cost": round(cost_chiller_day,2),
-            "monthly_cost": round(cost_chiller_month,2)
-        })
-
-    total_kw = sum(r["kw_usage_day"] for r in results_chillers)
-    total_day_cost = sum(r["daily_cost"] for r in results_chillers)
-    total_percent = sum(r["percent_load"] for r in results_chillers)
-    total_month_cost = sum(r["monthly_cost"] for r in results_chillers)
-    avg_kw_per_ton =  np.mean([chiller["kw_per_ton"] for chiller in best_group])
-    total_btu = sum(room["btu"] for room in room_btu_list)
-    avg_btu_sqft =  np.mean([room["btu_sqft"] for room in room_btu_list])
-    results_chillers.append({
-        "name": "Total",
-        "tons": total_tons,
-        "kw_usage_day": round(total_kw,2),
-        "percent_load": round(total_percent,2),
-        "daily_cost": round(total_day_cost,2),
-        "monthly_cost":round(total_month_cost,2)
-    })
-    room_btu_list.append({
-        "name": "Total",
-        "tons": building_load_tons,
-        "btu": total_btu,
-        "btu_sqft": round(avg_btu_sqft,2),
-        "room_percent_load":"100%"
-    })
-
-
-
-    
-    df_results_chillers = pd.DataFrame(results_chillers)
-    df_room_btu_list = pd.DataFrame(room_btu_list)
-
-    st.subheader("Running Chiller Data")
-    st.dataframe(df_results_chillers)
-
-    st.subheader("Room Load Data")
-    st.dataframe(df_room_btu_list)
-
-	st.subheader("Weather")
-	st.dataframe(hourly_dataframe)
-    
-  
-    csv = df_results_chillers.to_csv(index=False)
-    st.download_button("Download Results CSV", csv, "results_chillers.csv")
-    
-   
-    csv = df_room_btu_list.to_csv(index=False)
-    st.download_button("Download Results CSV", csv, "room_loads.csv")
+    st.subheader("Weather")
+    st.dataframe(hourly_dataframe)
