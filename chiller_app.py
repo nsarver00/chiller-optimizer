@@ -246,10 +246,12 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh, cost_of_economizer
     cost_w_economizer = dataframe["total_cost_econ"].sum()
     cost_wo_economizer = dataframe["total_cost_base"].sum()
     annual_savings = sum(hourly_dataframe["total_cost_base"]) - sum(dataframe["total_cost_econ"])
-    return dataframe, cost_w_economizer, cost_wo_economizer,annual_savings
+    payback = cost_of_economizer / ann_savings
+    payback_months = payback / 12
+    return dataframe, cost_w_economizer, cost_wo_economizer,annual_savings,payback_months
 
 
-def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer):
+def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months):
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
@@ -268,7 +270,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Annual Power Cost without Economizer", round(cost_wo_economizer, 2), "$")
     st.write("Annual Power Cost with Economizer", round(cost_w_economizer, 2), "$")
     st.write("Annual Power Cost Savings with Economizer",round(annual_savings,2), "$")
-    
+    st.write("Pay Period",round(payback_months,2), "months")
 df_chillers = pd.read_csv("Chiller_06_22.csv")
 df_chillers.columns = df_chillers.columns.str.strip()
 chillers = df_chillers.to_dict(orient="records")
@@ -282,7 +284,7 @@ if st.button("Print Rooms"):
 building_load_tons, room_btu_list = building_load_calc(rooms)
 hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
-hourly_dataframe,cost_w_economizer,cost_wo_economizer,annual_savings = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
+hourly_dataframe,cost_w_economizer,cost_wo_economizer,annual_savings,payback_months = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
 if best_group is None:
     st.error("COOLING REQUIREMENT EXCEEDS CHILLER CAPACITY")
 else:
@@ -291,7 +293,7 @@ else:
     )
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
-    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer)
+    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months)
     
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
@@ -302,16 +304,3 @@ else:
     file_name="weather_data.csv",
     mime="text/csv"
 )
-    st.write("Annual Savings",annual_savings, "$")
-    st.write("Hours econ active:", sum(hourly_dataframe["economizer_key"] == 0))
-    st.write("Total hours:", len(hourly_dataframe))
-    st.write("Percent econ:", sum(hourly_dataframe["economizer_key"] == 0) / len(hourly_dataframe))
-    st.write("Max possible savings/year:",
-      68 * costperkwh * 8760)
-    if costperkwh > 0:
-        st.write(
-            "Your savings fraction:",
-            annual_savings / (68 * costperkwh * 8760)
-        )
-    else:
-        st.write("Enter cost per kWh to calculate savings fraction.")
