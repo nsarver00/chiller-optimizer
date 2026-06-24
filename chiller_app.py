@@ -261,8 +261,8 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Daily Cost --> $", round(daily_cost, 2))
     st.write("Monthly Cost --> $", round(monthly_cost, 2))
     st.write("Utilization (%) -->", round(utilization, 2), "%")
-    st.write("Cost with Economizer", round(cost_w_economizer, 2), "$")
-    st.write("Cost without Economizer", round(cost_wo_economizer, 2), "$")
+    st.write("Annual Power Cost with Economizer", round(cost_w_economizer, 2), "$")
+    st.write("Annual Power Cost without Economizer", round(cost_wo_economizer, 2), "$")
     st.write("Payoff Time", round(payback_period, 1), "months")
 
     
