@@ -246,7 +246,7 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh, cost_of_economizer
     cost_w_economizer = dataframe["total_cost_econ"].sum()
     cost_wo_economizer = dataframe["total_cost_base"].sum()
     annual_savings = sum(hourly_dataframe["total_cost_base"]) - sum(dataframe["total_cost_econ"])
-    payback = cost_of_economizer / ann_savings
+    payback = cost_of_economizer / annual_savings
     payback_months = payback / 12
     return dataframe, cost_w_economizer, cost_wo_economizer,annual_savings,payback_months
 
