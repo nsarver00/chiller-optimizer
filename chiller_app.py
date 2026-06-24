@@ -245,7 +245,7 @@ def iplv_lookup(load_pct):
     return iplv_table[closest_load]
 
 
-def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payment_months):
+def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period):
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
@@ -263,7 +263,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Utilization (%) -->", round(utilization, 2), "%")
     st.write("Cost with Economizer", round(cost_w_economizer, 2), "$")
     st.write("Cost without Economizer", round(cost_wo_economizer, 2), "$")
-    st.write("Payoff Time", round(payment_months, 1), "months")
+    st.write("Payoff Time", round(payback_period, 1), "months")
 
     
 
@@ -281,7 +281,7 @@ if st.button("Print Rooms"):
 building_load_tons, room_btu_list = building_load_calc(rooms)
 hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
-hourly_dataframe,cost_w_economizer,cost_wo_economizer = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh)
+hourly_dataframe,cost_w_economizer,cost_wo_economizer,payback_period = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
 if best_group is None:
     st.error("COOLING REQUIREMENT EXCEEDS CHILLER CAPACITY")
 else:
@@ -291,7 +291,7 @@ else:
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
 
-    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payment_months)
+    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period)
 
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
