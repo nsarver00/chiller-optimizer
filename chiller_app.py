@@ -156,7 +156,7 @@ def hourly_df_enthalpy_columns(dataframe):
         out_h = dataframe.loc[i, "outside_enthalpy"]
         in_h = dataframe.loc[i, "building_enthalpy"]
         if in_h > out_h:
-            economizer_key.append(.8)
+            economizer_key.append(0)
         else:
             economizer_key.append(1)
     dataframe["economizer_key"] = economizer_key
@@ -303,7 +303,7 @@ else:
     mime="text/csv"
 )
     st.write("Annual Savings",annual_savings, "$")
-    st.write("Hours econ active:", sum(hourly_dataframe["economizer_key"] == 0.8))
+    st.write("Hours econ active:", sum(hourly_dataframe["economizer_key"] == 0))
     st.write("Total hours:", len(hourly_dataframe))
     st.write("Percent econ:", sum(hourly_dataframe["economizer_key"] == 0.8) / len(hourly_dataframe))
     st.write("Max possible savings/year:",
