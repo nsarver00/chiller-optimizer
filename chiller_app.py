@@ -263,22 +263,6 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Annual Power Cost Savings with Economizer",round(annual_savings,2), "$")
     st.write("Payoff Time", round(payback_period, 1), "months")
     
-
-cooling_fraction = .65
-non_cooling_fraction = .35
-
-hourly_dataframe["kw_cooling"] = best_kw * cooling_fraction
-hourly_dataframe["kw_non_cooling"] = best_kw * non_cooling_fraction
-
-hourly_dataframe["kw_cooling_econ"] = hourly_dataframe["kw_cooling"] * hourly_dataframe["economizer_key"]
-
-hourly_dataframe["total_kw_econ"] = hourly_dataframe["kw_cooling_econ"] + hourly_dataframe["kw_non_cooling"]
-hourly_dataframe["total_kw_base"] = hourly_dataframe["kw_cooling"] + hourly_dataframe["kw_non_cooling"]
-
-hourly_dataframe["total_cost_econ"] = hourly_dataframe["total_kw_econ"] * costperkwh
-hourly_dataframe["total_cost_base"] = hourly_dataframe["total_kw_base"] * costperkwh
-annual_savings = sum(hourly_dataframe["total_cost_base"]) - sum(hourly_dataframe["total_cost_econ"])
-
 df_chillers = pd.read_csv("Chiller_06_22.csv")
 df_chillers.columns = df_chillers.columns.str.strip()
 chillers = df_chillers.to_dict(orient="records")
@@ -301,9 +285,23 @@ else:
     )
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
+    cooling_fraction = .65
+    non_cooling_fraction = .35
+    
+    hourly_dataframe["kw_cooling"] = best_kw * cooling_fraction
+    hourly_dataframe["kw_non_cooling"] = best_kw * non_cooling_fraction
+    
+    hourly_dataframe["kw_cooling_econ"] = hourly_dataframe["kw_cooling"] * hourly_dataframe["economizer_key"]
+    
+    hourly_dataframe["total_kw_econ"] = hourly_dataframe["kw_cooling_econ"] + hourly_dataframe["kw_non_cooling"]
+    hourly_dataframe["total_kw_base"] = hourly_dataframe["kw_cooling"] + hourly_dataframe["kw_non_cooling"]
+    
+    hourly_dataframe["total_cost_econ"] = hourly_dataframe["total_kw_econ"] * costperkwh
+    hourly_dataframe["total_cost_base"] = hourly_dataframe["total_kw_base"] * costperkwh
+    annual_savings = sum(hourly_dataframe["total_cost_base"]) - sum(hourly_dataframe["total_cost_econ"])
 
     print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period)
-
+    
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
     csv = hourly_dataframe.to_csv(index=False)
