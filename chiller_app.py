@@ -10,8 +10,8 @@ from retry_requests import retry
 import math
 st.title("Chiller Plant Optimizer")
 costperkwh = st.number_input("Cost per kWh?")
-start_date = st.text_input(f"Start Date {i}", key=f"start_date_{i}")
-end_date = st.text_input(f"End Date {i}", key=f"end_date_{i}")
+start_date = st.text_input("Start Date?")
+end_date = st.text_input("End Date?")
 
 def room_maker():
     num_rooms = st.number_input("Number of rooms?", min_value=1, step=1)
