@@ -206,17 +206,6 @@ def calculate(best_group, best_kw, costperkwh, building_load_tons):
     utilization = (building_load_tons / total_tons) * 100
     return total_tons, daily_cost, monthly_cost, utilization
 
-def calculate_costs_dataframe(dataframe, best_kw, costperkwh,cost_of_economizer):
-    dataframe["kw"] = best_kw
-
-    dataframe["hourly_cost"] = (
-        dataframe["kw"] * dataframe["economizer_key"] * costperkwh
-    )
-    cost_w_economizer = sum(dataframe["total_cost_econ"])
-    cost_wo_economizer = sum(dataframe["total_cost_base"] * costperkwh)
-    return dataframe,cost_w_economizer,cost_wo_economizer
-       
-
 def system_flags(total_tons, building_load):
     if total_tons > building_load:
         st.info("Cooling capacity exceeds building load")
