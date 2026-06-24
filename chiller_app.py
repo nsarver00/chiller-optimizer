@@ -308,5 +308,10 @@ else:
     st.write("Percent econ:", sum(hourly_dataframe["economizer_key"] == 0.8) / len(hourly_dataframe))
     st.write("Max possible savings/year:",
       68 * costperkwh * 8760)
-    st.write("Your savings fraction:",
-      annual_savings / (68 * (costperkwhif > 0 else 0) * 8760))
+    if costperkwh > 0:
+        st.write(
+            "Your savings fraction:",
+            annual_savings / (68 * costperkwh * 8760)
+        )
+    else:
+        st.write("Enter cost per kWh to calculate savings fraction.")
