@@ -23,6 +23,8 @@ lat,long = city_coords[city]
 start_date = st.date_input("Start date")
 end_date = st.date_input("End date")
 costperkwh = st.number_input("Cost per kWh?")
+cost_of_economizer = st.number_input("Cost of Economizer Upgrade?")
+
 
 
 def room_maker():
@@ -204,7 +206,7 @@ def calculate(best_group, best_kw, costperkwh, building_load_tons):
     utilization = (building_load_tons / total_tons) * 100
     return total_tons, daily_cost, monthly_cost, utilization
 
-def calculate_costs_dataframe(dataframe, best_kw, costperkwh):
+def calculate_costs_dataframe(dataframe, best_kw, costperkwh,cost_of_economizer):
     dataframe["kw"] = best_kw
 
     dataframe["hourly_cost"] = (
@@ -212,7 +214,10 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh):
     )
     cost_w_economizer = sum(dataframe["hourly_cost"])
     cost_wo_economizer = sum(dataframe["kw"] * costperkwh)
-    return dataframe,cost_w_economizer,cost_wo_economizer
+    annual_savings = cost_wo_economizer - cost_w_economizer
+    payback_period = cost_of_economizer / annual_savings
+    payback_period = payback_period / 12
+    return dataframe,cost_w_economizer,cost_wo_economizer,payback_period
        
 
 def system_flags(total_tons, building_load):
@@ -240,7 +245,7 @@ def iplv_lookup(load_pct):
     return iplv_table[closest_load]
 
 
-def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer):
+def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payment_months):
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
@@ -258,6 +263,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Utilization (%) -->", round(utilization, 2), "%")
     st.write("Cost with Economizer", round(cost_w_economizer, 2), "$")
     st.write("Cost without Economizer", round(cost_wo_economizer, 2), "$")
+    st.write("Payoff Time", round(payment_months, 1), "months")
 
     
 
@@ -285,7 +291,7 @@ else:
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
 
-    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer)
+    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payment_months)
 
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
