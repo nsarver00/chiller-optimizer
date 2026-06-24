@@ -289,3 +289,10 @@ else:
 
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
+    csv = hourly_dataframe.to_csv(index=False)
+    st.download_button(
+    label="Download Weather Data",
+    data=csv,
+    file_name="weather_data.csv",
+    mime="text/csv"
+)
