@@ -33,7 +33,7 @@ def room_maker():
     for i in range(int(num_rooms)):
         st.subheader(f"Room {i+1}")
 
-        room_name = st.text_input(f"Room name {i}", key=f"name_{i}")
+        room_name = st.text_input(f"Room name {i+1}", key=f"name_{i}")
         room_cfm = st.number_input(f"Room cfm {i}", key=f"cfm_{i}")
         room_t_supply = st.number_input(f"Room t_supply {i}", key=f"supply_{i}")
         room_t_return = st.number_input(f"Room t_return {i}", key=f"return_{i}")
