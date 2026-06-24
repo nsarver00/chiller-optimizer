@@ -198,7 +198,8 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh):
     dataframe["hourly_cost"] = (
         dataframe["kw"] * dataframe["economizer_key"] * costperkwh
     )
-    return dataframe
+    cost_w_economizer = sum(dataframe["hourly_cost"]
+    return dataframe,cost_w_economizer
        
 
 def system_flags(total_tons, building_load):
@@ -242,6 +243,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Daily Cost --> $", round(daily_cost, 2))
     st.write("Monthly Cost --> $", round(monthly_cost, 2))
     st.write("Utilization (%) -->", round(utilization, 2), "%")
+    
 
 
 df_chillers = pd.read_csv("Chiller_06_22.csv")
@@ -257,7 +259,7 @@ if st.button("Print Rooms"):
 building_load_tons, room_btu_list = building_load_calc(rooms)
 hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
-hourly_dataframe = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh)
+hourly_dataframe,cost_w_economizer = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh)
 if best_group is None:
     st.error("COOLING REQUIREMENT EXCEEDS CHILLER CAPACITY")
 else:
