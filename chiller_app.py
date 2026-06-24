@@ -302,3 +302,11 @@ else:
     file_name="weather_data.csv",
     mime="text/csv"
 )
+
+    st.write("Hours econ active:", sum(df["economizer_key"] == 0.5))
+    st.write("Total hours:", len(df))
+    st.write("Percent econ:", sum(df["economizer_key"] == 0.5) / len(df))
+    st.write("Max possible savings/year:",
+      68 * costperkwh * 8760)
+    st.write("Your savings fraction:",
+      annual_savings / (68 * costperkwh * 8760))
