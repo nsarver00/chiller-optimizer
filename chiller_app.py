@@ -206,6 +206,21 @@ def calculate(best_group, best_kw, costperkwh, building_load_tons):
     utilization = (building_load_tons / total_tons) * 100
     return total_tons, daily_cost, monthly_cost, utilization
 
+cooling_fraction = .65
+non_cooling_fraction = .35
+
+hourly_dataframe["kw_cooling"] = best_kw * cooling_fraction
+hourly_dataframe["kw_non_cooling"] = best_kw * non_cooling_fraction
+
+hourly_dataframe["kw_cooling_econ"] = hourly_dataframe["kw_cooling"] * hourly_dataframe["economizer_key"]
+
+hourly_dataframe["total_kw_econ"] = hourly_dataframe["kw_cooling_econ"] + hourly_dataframe["kw_non_cooling"]
+hourly_dataframe["total_kw_base"] = hourly_dataframe["kw_cooling"] + hourly_dataframe["kw_non_cooling"]
+
+hourly_dataframe["total_cost_econ"] = hourly_dataframe["total_kw_econ"] * costperkwh
+hourly_dataframe["total_cost_base"] = hourly_dataframe["total_kw_base"] * costperkwh
+annual_savings = sum(hourly_dataframe["total_cost_base"]) - sum(hourly_dataframe["total_cost_econ"])
+
 def calculate_costs_dataframe(dataframe, best_kw, costperkwh,cost_of_economizer):
     dataframe["kw"] = best_kw
 
@@ -214,10 +229,7 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh,cost_of_economizer)
     )
     cost_w_economizer = sum(dataframe["hourly_cost"])
     cost_wo_economizer = sum(dataframe["kw"] * costperkwh)
-    annual_savings = cost_wo_economizer - cost_w_economizer
-    payback_period = cost_of_economizer / annual_savings
-    payback_period = payback_period * 12
-    return dataframe,cost_w_economizer,cost_wo_economizer,payback_period,annual_savings
+    return dataframe,cost_w_economizer,cost_wo_economizer
        
 
 def system_flags(total_tons, building_load):
@@ -281,7 +293,7 @@ if st.button("Print Rooms"):
 building_load_tons, room_btu_list = building_load_calc(rooms)
 hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
-hourly_dataframe,cost_w_economizer,cost_wo_economizer,payback_period,annual_savings = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
+hourly_dataframe,cost_w_economizer,cost_wo_economizer = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
 if best_group is None:
     st.error("COOLING REQUIREMENT EXCEEDS CHILLER CAPACITY")
 else:
@@ -291,7 +303,7 @@ else:
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
 
-    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period,annual_savings)
+    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period)
 
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
