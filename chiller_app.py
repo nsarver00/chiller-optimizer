@@ -251,7 +251,7 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh, cost_of_economizer
     return dataframe, cost_w_economizer, cost_wo_economizer,annual_savings,payback_months
 
 
-def print_all(best_group,daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months):
+def print_all(best_group,total_tons,daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months):
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
