@@ -212,8 +212,8 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh,cost_of_economizer)
     dataframe["hourly_cost"] = (
         dataframe["kw"] * dataframe["economizer_key"] * costperkwh
     )
-    cost_w_economizer = sum(dataframe["hourly_cost"])
-    cost_wo_economizer = sum(dataframe["kw"] * costperkwh)
+    cost_w_economizer = sum(dataframe["total_cost_econ"])
+    cost_wo_economizer = sum(dataframe["total_cost_base"] * costperkwh)
     return dataframe,cost_w_economizer,cost_wo_economizer
        
 
