@@ -255,11 +255,9 @@ chillers = df_chillers.to_dict(orient="records")
 st.subheader("Chiller Data")
 st.dataframe(df_chillers)
 
-rooms = room_maker()
-
 if st.button("Print Rooms"):
     st.write(rooms)
-
+rooms = room_maker()
 building_load_tons, room_btu_list = building_load_calc(rooms)
 hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
