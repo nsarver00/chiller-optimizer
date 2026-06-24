@@ -251,7 +251,7 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh, cost_of_economizer
     return dataframe, cost_w_economizer, cost_wo_economizer,annual_savings,payback_months
 
 
-def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months):
+def print_all(best_group,daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months):
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
@@ -262,7 +262,6 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
         )
 
     st.write(len(best_group), "Chillers Running")
-    st.write("Total kW -->", round(best_kw, 2), "kW")
     st.write("Chiller Load -->", total_tons, "Tons")
     st.write("Daily Cost --> $", round(daily_cost, 2))
     st.write("Monthly Cost --> $", round(monthly_cost, 2))
@@ -293,7 +292,7 @@ else:
     )
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
-    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months)
+    print_all(best_group, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months)
     
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
