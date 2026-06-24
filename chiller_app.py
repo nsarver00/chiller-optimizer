@@ -192,7 +192,7 @@ def calculate(best_group, best_kw, costperkwh, building_load_tons):
     utilization = (building_load_tons / total_tons) * 100
     return total_tons, daily_cost, monthly_cost, utilization
 
-def calculate_costs(dataframe, best_kw ,costperkwh):
+def calculate_costs_dataframe(dataframe, best_kw ,costperkwh):
     kw_list = []
     hourly_cost_list = []
     for i in range(len(dataframe)):
