@@ -282,7 +282,7 @@ if st.button("Print Rooms"):
 building_load_tons, room_btu_list = building_load_calc(rooms)
 hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
-hourly_dataframe,cost_w_economizer,cost_wo_economizer = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
+hourly_dataframe,cost_w_economizer,cost_wo_economizer,annual_savings = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
 if best_group is None:
     st.error("COOLING REQUIREMENT EXCEEDS CHILLER CAPACITY")
 else:
