@@ -13,7 +13,8 @@ city_coords = {
     "Grand Rapids": (42.9634, -85.6681),
     "Chicago": (41.8781, -87.6298),
     "New York": (40.7128, -74.0060),
-    "Miami": (25.7617, -80.1918)
+    "Miami": (25.7617, -80.1918),
+    "Oymyakon": (63.4608,142.7858)
 }
 
 city = st.selectbox("Select Location", list(city_coords.keys()))
