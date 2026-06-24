@@ -303,9 +303,9 @@ else:
     mime="text/csv"
 )
 
-    st.write("Hours econ active:", sum(hourly_dataframe["economizer_key"] == 0.5))
+    st.write("Hours econ active:", sum(hourly_dataframe["economizer_key"] == 0.8))
     st.write("Total hours:", len(hourly_dataframe))
-    st.write("Percent econ:", sum(hourly_dataframe["economizer_key"] == 0.5) / len(hourly_dataframe))
+    st.write("Percent econ:", sum(hourly_dataframe["economizer_key"] == 0.8) / len(hourly_dataframe))
     st.write("Max possible savings/year:",
       68 * costperkwh * 8760)
     st.write("Your savings fraction:",
