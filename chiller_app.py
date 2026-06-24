@@ -10,8 +10,8 @@ from retry_requests import retry
 import math
 st.title("Chiller Plant Optimizer")
 costperkwh = st.number_input("Cost per kWh?")
-start_date = st.text_input("Start Date?")
-end_date = st.text_input("End Date?")
+start_date = st.date_input("Start date")
+end_date = st.date_input("End date")
 
 def room_maker():
     num_rooms = st.number_input("Number of rooms?", min_value=1, step=1)
@@ -47,8 +47,8 @@ url = "https://archive-api.open-meteo.com/v1/archive"
 params = {
     "latitude": 42.58,
     "longitude": -85.36,
-    "start_date": "start_date",
-    "end_date": "end_date",
+    "start_date": start_date.strftime("%Y-%m-%d"),
+    "end_date":  end_date.strftime("%Y-%m-%d"),
     "hourly": ["temperature_2m", "relative_humidity_2m"],
     "temperature_unit": "fahrenheit",
 }
