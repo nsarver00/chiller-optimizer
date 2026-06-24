@@ -199,7 +199,7 @@ def calculate_costs(dataframe, best_kw ,costperkwh):
         kw_list.append(best_kw)
         dataframe["hourly_cost"] = hourly_cost_list
     for i in range(len(dataframe)):    
-        hourly_cost = datafram["kw_list"] * dataframe["economizer_key"]
+        hourly_cost = dataframe["kw_list"] * dataframe["economizer_key"]
         hourly_cost_list.append(hourly_cost)
     dataframe["hourly_cost"] = hourly_cost_list
     return None
