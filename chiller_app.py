@@ -295,7 +295,7 @@ else:
     )
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
- 
+    dataframe, cost_w_economizer, cost_wo_economizer = calculate_costs_dataframe(dataframe, best_kw, costperkwh, cost_of_economizer)
     print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer)
     
     st.subheader("Weather")
