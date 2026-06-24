@@ -57,7 +57,7 @@ openmeteo = openmeteo_requests.Client(session=retry_session)
 url = "https://archive-api.open-meteo.com/v1/archive"
 params = {
     "latitude": lat,
-    "longitude": lon,
+    "longitude": long,
     "start_date": start_date.strftime("%Y-%m-%d"),
     "end_date":  end_date.strftime("%Y-%m-%d"),
     "hourly": ["temperature_2m", "relative_humidity_2m"],
