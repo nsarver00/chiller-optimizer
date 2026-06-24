@@ -240,6 +240,17 @@ def iplv_lookup(load_pct):
     )
 
     return iplv_table[closest_load]
+def calculate_costs_dataframe(dataframe, best_kw, costperkwh, cost_of_economizer):
+    cooling_fraction = .65
+    non_cooling_fraction = .35
+    dataframe["kw"] = best_kw
+    dataframe["total_cost_econ"] = dataframe["total_kw_econ"] * costperkwh
+    dataframe["total_cost_base"] = dataframe["total_kw_base"] * costperkwh
+
+    cost_w_economizer = dataframe["total_cost_econ"].sum()
+    cost_wo_economizer = dataframe["total_cost_base"].sum()
+
+    return dataframe, cost_w_economizer, cost_wo_economizer
 
 
 def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer):
@@ -284,21 +295,7 @@ else:
     )
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
-    cooling_fraction = .65
-    non_cooling_fraction = .35
-    
-    hourly_dataframe["kw_cooling"] = best_kw * cooling_fraction
-    hourly_dataframe["kw_non_cooling"] = best_kw * non_cooling_fraction
-    
-    hourly_dataframe["kw_cooling_econ"] = hourly_dataframe["kw_cooling"] * hourly_dataframe["economizer_key"]
-    
-    hourly_dataframe["total_kw_econ"] = hourly_dataframe["kw_cooling_econ"] + hourly_dataframe["kw_non_cooling"]
-    hourly_dataframe["total_kw_base"] = hourly_dataframe["kw_cooling"] + hourly_dataframe["kw_non_cooling"]
-    
-    hourly_dataframe["total_cost_econ"] = hourly_dataframe["total_kw_econ"] * costperkwh
-    hourly_dataframe["total_cost_base"] = hourly_dataframe["total_kw_base"] * costperkwh
-    annual_savings = sum(hourly_dataframe["total_cost_base"]) - sum(hourly_dataframe["total_cost_econ"])
-
+ 
     print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer)
     
     st.subheader("Weather")
