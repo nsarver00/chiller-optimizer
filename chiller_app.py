@@ -242,7 +242,7 @@ def iplv_lookup(load_pct):
     return iplv_table[closest_load]
 
 
-def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period,annual_savings):
+def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer)
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
