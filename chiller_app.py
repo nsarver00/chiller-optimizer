@@ -34,10 +34,10 @@ def room_maker():
         st.subheader(f"Room {i+1}")
 
         room_name = st.text_input(f"Room name {i+1}", key=f"name_{i}")
-        room_cfm = st.number_input(f"Room cfm {i}", key=f"cfm_{i}")
-        room_t_supply = st.number_input(f"Room t_supply {i}", key=f"supply_{i}")
-        room_t_return = st.number_input(f"Room t_return {i}", key=f"return_{i}")
-        room_sqft = st.number_input(f"Room sqft {i}", key=f"sq_ft_{i}")
+        room_cfm = st.number_input(f"Room cfm {i+1}", key=f"cfm_{i}")
+        room_t_supply = st.number_input(f"Room t_supply {i+1}", key=f"supply_{i}")
+        room_t_return = st.number_input(f"Room t_return {i+1}", key=f"return_{i}")
+        room_sqft = st.number_input(f"Room sqft {i+1}", key=f"sq_ft_{i}")
 
         rooms.append({
             "name": room_name,
