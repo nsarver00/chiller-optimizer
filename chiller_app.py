@@ -122,6 +122,31 @@ def building_load_calc(rooms):
 
     return building_load_tons, room_btu_list
 
+def hourly_df_enthalpy_columns(dataframe):
+    enthalpy_list = []
+    for i in range(len(dataframe)):
+        db = dataframe.loc[i, "temperature_2m"]
+        rh = dataframe.loc[i, "relative_humidity_2m"]
+        
+        h = calculate_enthalpy(db, rh)
+        enthalpy_list.append(h)
+
+    dataframe["outside_enthalpy"] = enthalpy_list
+    building_load_constant = []
+    for i in range(len(dataframe)):
+        building_load_constant.append(18)
+    dataframe["building_enthalpy"] = building_load_constant
+    
+    economizer_key = []
+    for i in range(len(dataframe)):
+        out_h = dataframe.loc[i, "outside_enthalpy"]
+        in_h = dataframe.loc[i, "building_enthalpy"]
+        if in_h > out_h:
+            economizer_key.append(.5)
+        else:
+            economizer_key.append(1)
+    dataframe["economizer_key"] = economizer_key
+    return None
 
 def optimize_chillers(building_load_tons, chillers):
     best_kw = 10000000
@@ -224,30 +249,7 @@ if st.button("Print Rooms"):
     st.write(rooms)
 
 building_load_tons, room_btu_list = building_load_calc(rooms)
-
-enthalpy_list = []
-
-for i in range(len(hourly_dataframe)):
-    db = hourly_dataframe.loc[i, "temperature_2m"]
-    rh = hourly_dataframe.loc[i, "relative_humidity_2m"]
-    
-    h = calculate_enthalpy(db, rh)
-    enthalpy_list.append(h)
-
-hourly_dataframe["outside_enthalpy"] = enthalpy_list
-
-economizer_key = []
-
-for i in range(len(hourly_dataframe)):
-    out_h = hourly_dataframe.loc[i, "outside_enthalpy"]
-    in_h = hourly_dataframe.loc[i, "building_enthalpy"]
-    if in_h > out_h:
-        economizer_key.append(.5)
-    else:
-        economizer_key.append(1)
-
-hourly_dataframe["economizer_key"] = economizer_key
-
+hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
 
 if best_group is None:
