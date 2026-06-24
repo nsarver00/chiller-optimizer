@@ -309,4 +309,4 @@ else:
     st.write("Max possible savings/year:",
       68 * costperkwh * 8760)
     st.write("Your savings fraction:",
-      annual_savings / (68 * costperkwhif > 0 else 0 * 8760))
+      annual_savings / (68 * (costperkwhif > 0 else 0) * 8760))
