@@ -49,7 +49,7 @@ params = {
     "longitude": -85.36,
     "start_date": start_date.strftime("%Y-%m-%d"),
     "end_date":  end_date.strftime("%Y-%m-%d"),
-    "hourly": ["temperature_2m", "relative_humidity_2m"],
+    "hourly": ["temperature", "relative_humidity"],
     "temperature_unit": "fahrenheit",
 }
 
@@ -57,8 +57,8 @@ responses = openmeteo.weather_api(url, params=params)
 response = responses[0]
 
 hourly = response.Hourly()
-hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
-hourly_relative_humidity_2m = hourly.Variables(1).ValuesAsNumpy()
+hourly_temperature = hourly.Variables(0).ValuesAsNumpy()
+hourly_relative_humidity = hourly.Variables(1).ValuesAsNumpy()
 
 hourly_data = {
     "date": pd.date_range(
@@ -69,8 +69,8 @@ hourly_data = {
     )
 }
 
-hourly_data["temperature_2m"] = hourly_temperature_2m
-hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
+hourly_data["temperature"] = hourly_temperature
+hourly_data["relative_humidity"] = hourly_relative_humidity
 
 hourly_dataframe = pd.DataFrame(data=hourly_data)
 
