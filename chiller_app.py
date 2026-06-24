@@ -9,6 +9,9 @@ import requests_cache
 from retry_requests import retry
 import math
 st.title("Chiller Plant Optimizer")
+costperkwh = st.number_input("Cost per kWh?")
+start_date = st.text_input(f"Start Date {i}", key=f"start_date_{i}")
+end_date = st.text_input(f"End Date {i}", key=f"end_date_{i}")
 
 def room_maker():
     num_rooms = st.number_input("Number of rooms?", min_value=1, step=1)
@@ -44,8 +47,8 @@ url = "https://archive-api.open-meteo.com/v1/archive"
 params = {
     "latitude": 42.58,
     "longitude": -85.36,
-    "start_date": "2026-02-05",
-    "end_date": "2026-06-07",
+    "start_date": "start_date",
+    "end_date": "end_date",
     "hourly": ["temperature_2m", "relative_humidity_2m"],
     "temperature_unit": "fahrenheit",
 }
@@ -70,9 +73,6 @@ hourly_data["temperature_2m"] = hourly_temperature_2m
 hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
 
 hourly_dataframe = pd.DataFrame(data=hourly_data)
-
-
-costperkwh = st.number_input("Cost per kWh?")
 
 building_load_constant = []
 for i in range(len(hourly_dataframe)):
