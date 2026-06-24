@@ -156,7 +156,7 @@ def hourly_df_enthalpy_columns(dataframe):
         out_h = dataframe.loc[i, "outside_enthalpy"]
         in_h = dataframe.loc[i, "building_enthalpy"]
         if in_h > out_h:
-            economizer_key.append(.5)
+            economizer_key.append(.8)
         else:
             economizer_key.append(1)
     dataframe["economizer_key"] = economizer_key
