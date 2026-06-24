@@ -245,7 +245,7 @@ def iplv_lookup(load_pct):
     return iplv_table[closest_load]
 
 
-def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period):
+def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period,annual_savings):
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
@@ -264,7 +264,7 @@ def print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utiliza
     st.write("Annual Power Cost with Economizer", round(cost_w_economizer, 2), "$")
     st.write("Annual Power Cost without Economizer", round(cost_wo_economizer, 2), "$")
     st.write("Payoff Time", round(payback_period, 1), "months")
-
+    st.write("Annual Power Cost Savings with Economizer",round(annual_savings,2), "$")
     
 
 
@@ -291,7 +291,7 @@ else:
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
 
-    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period)
+    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period,annual_savings)
 
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
