@@ -9,9 +9,20 @@ import requests_cache
 from retry_requests import retry
 import math
 st.title("Chiller Plant Optimizer")
-costperkwh = st.number_input("Cost per kWh?")
+city_coords = {
+    "Grand Rapids": (42.9634, -85.6681),
+    "Chicago": (41.8781, -87.6298),
+    "New York": (40.7128, -74.0060),
+    "Miami": (25.7617, -80.1918)
+}
+
+city = st.selectbox("Select Location", list(city_coords.keys()))
+
+lat,long = city_coords[city]
 start_date = st.date_input("Start date")
 end_date = st.date_input("End date")
+costperkwh = st.number_input("Cost per kWh?")
+
 
 def room_maker():
     num_rooms = st.number_input("Number of rooms?", min_value=1, step=1)
@@ -45,8 +56,8 @@ openmeteo = openmeteo_requests.Client(session=retry_session)
 
 url = "https://archive-api.open-meteo.com/v1/archive"
 params = {
-    "latitude": 42.58,
-    "longitude": -85.36,
+    "latitude": lat,
+    "longitude": lon,
     "start_date": start_date.strftime("%Y-%m-%d"),
     "end_date":  end_date.strftime("%Y-%m-%d"),
     "hourly": ["temperature_2m", "relative_humidity_2m"],
