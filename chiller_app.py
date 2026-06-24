@@ -300,7 +300,7 @@ else:
     hourly_dataframe["total_cost_base"] = hourly_dataframe["total_kw_base"] * costperkwh
     annual_savings = sum(hourly_dataframe["total_cost_base"]) - sum(hourly_dataframe["total_cost_econ"])
 
-    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_period)
+    print_all(best_group, best_kw, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer)
     
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
