@@ -197,7 +197,7 @@ def hourly_df_enthalpy_columns(dataframe):
             economizer_key.append(1)
     dataframe["economizer_key"] = economizer_key
     economizer_runtime = sum(economizer_runtime_list)
-    economizer_runtime_percent = economizer_runtime / len(hourly_dataframe)
+    economizer_runtime_percent = (economizer_runtime / len(hourly_dataframe)) * 100
     return economizer_runtime,economizer_runtime_percent
 
 def optimize_chillers(building_load_tons, chillers):
