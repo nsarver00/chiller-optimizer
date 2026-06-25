@@ -308,7 +308,7 @@ def print_all(best_group,total_tons,daily_cost, monthly_cost, utilization, build
     st.write("Annual Power Cost with Economizer", round(cost_w_economizer, 2), "$")
     st.write("Annual Power Cost Savings with Economizer",round(annual_savings,2), "$")
     st.write("Economizer Runtime",round(economizer_runtime,2), "hours")
-    st.write("Percent Time Economizer On",round(economizer_runtime_percent,2), "hours")
+    st.write("Percent Time Economizer On",round(economizer_runtime_percent,4), "hours")
     st.write("Pay Period",round(payback_months,2), "months")
 df_chillers = pd.read_csv("Chiller_06_22.csv")
 df_chillers.columns = df_chillers.columns.str.strip()
