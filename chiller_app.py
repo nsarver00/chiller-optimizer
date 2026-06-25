@@ -321,7 +321,7 @@ if st.button("Print Rooms"):
     st.write(rooms)
 
 building_load_tons, room_btu_list = building_load_calc(rooms)
-economizer_runtime = hourly_df_enthalpy_columns(hourly_dataframe)
+economizer_runtime,economizer_runtime_percent = hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
 hourly_dataframe,cost_w_economizer,cost_wo_economizer,annual_savings,payback_months = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
 if best_group is None:
