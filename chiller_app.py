@@ -185,17 +185,20 @@ def hourly_df_enthalpy_columns(dataframe):
     for i in range(len(dataframe)):
         building_load_constant.append(18)
     dataframe["building_enthalpy"] = building_load_constant
-    
+    economizer_runtime_list = []
     economizer_key = []
     for i in range(len(dataframe)):
         out_h = dataframe.loc[i, "outside_enthalpy"]
         in_h = dataframe.loc[i, "building_enthalpy"]
         if in_h > out_h:
             economizer_key.append(0)
+            economizer_runtime_list.append(1)
         else:
             economizer_key.append(1)
     dataframe["economizer_key"] = economizer_key
-    return None
+    economizer_runtime = sum(economizer_runtime_list)
+    economizer_runtime_percent = economizer_runtime / len(hourly_dataframe)
+    return economizer_runtime,economizer_runtime_percent
 
 def optimize_chillers(building_load_tons, chillers):
     best_kw = 10000000
@@ -286,7 +289,7 @@ def calculate_costs_dataframe(dataframe, best_kw, costperkwh, cost_of_economizer
     return dataframe, cost_w_economizer, cost_wo_economizer,annual_savings,payback_months
 
 
-def print_all(best_group,total_tons,daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months):
+def print_all(best_group,total_tons,daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months,economizer_runtime,economizer_runtime_percent):
     st.write("Building Load -->", round(building_load_tons, 2), "tons")
 
     for chiller in best_group:
@@ -304,6 +307,8 @@ def print_all(best_group,total_tons,daily_cost, monthly_cost, utilization, build
     st.write("Annual Power Cost without Economizer", round(cost_wo_economizer, 2), "$")
     st.write("Annual Power Cost with Economizer", round(cost_w_economizer, 2), "$")
     st.write("Annual Power Cost Savings with Economizer",round(annual_savings,2), "$")
+    st.write("Economizer Runtime",round(economizer_runtime,2), "hours")
+    st.write("Percent Time Economizer On",round(economizer_runtime_percent,2), "hours")
     st.write("Pay Period",round(payback_months,2), "months")
 df_chillers = pd.read_csv("Chiller_06_22.csv")
 df_chillers.columns = df_chillers.columns.str.strip()
@@ -316,7 +321,7 @@ if st.button("Print Rooms"):
     st.write(rooms)
 
 building_load_tons, room_btu_list = building_load_calc(rooms)
-hourly_df_enthalpy_columns(hourly_dataframe)
+economizer_runtime = hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
 hourly_dataframe,cost_w_economizer,cost_wo_economizer,annual_savings,payback_months = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
 if best_group is None:
@@ -327,7 +332,7 @@ else:
     )
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
-    print_all(best_group, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months)
+    print_all(best_group, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months,economizer_runtime,economizer_runtime_percent)
     
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
