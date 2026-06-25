@@ -339,7 +339,7 @@ else:
               cost_w_economizer,cost_wo_economizer,payback_months,
               economizer_runtime,economizer_runtime_percent)
     
-     hourly_dataframe["date_only"] = hourly_dataframe["date"].dt.date
+    hourly_dataframe["date_only"] = hourly_dataframe["date"].dt.date
 
     # count hours per day when economizer is ON
     daily_runtime = (
