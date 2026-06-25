@@ -338,6 +338,26 @@ else:
     print_all(best_group, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,
               cost_w_economizer,cost_wo_economizer,payback_months,
               economizer_runtime,economizer_runtime_percent)
+    
+     hourly_dataframe["date_only"] = hourly_dataframe["date"].dt.date
 
+    # count hours per day when economizer is ON
+    daily_runtime = (
+        hourly_dataframe.groupby("date_only")["economizer_key"]
+        .apply(lambda x: (x == 0).sum())
+        .reset_index()
+    )
+
+    daily_runtime.columns = ["date", "economizer_hours"]
+
+    st.subheader("Economizer Runtime by Day")
+    st.bar_chart(daily_runtime.set_index("date")["economizer_hours"])
+
+    # percent of day economizer runs
+    daily_runtime["percent_on"] = daily_runtime["economizer_hours"] / 24 * 100
+
+    st.subheader("Economizer % Runtime")
+    st.line_chart(daily_runtime.set_index("date")["percent_on"])
+    
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
