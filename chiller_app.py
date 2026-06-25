@@ -349,13 +349,13 @@ else:
     )
 
     daily_runtime.columns = ["date", "economizer_hours"]
-
+    
     st.subheader("Economizer Runtime by Day")
     st.bar_chart(daily_runtime.set_index("date")["economizer_hours"])
-
+    
     # percent of day economizer runs
     daily_runtime["percent_on"] = daily_runtime["economizer_hours"] / 24 * 100
-
+    
     st.subheader("Economizer % Runtime")
     st.line_chart(daily_runtime.set_index("date")["percent_on"])
     
