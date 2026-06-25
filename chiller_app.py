@@ -324,22 +324,21 @@ building_load_tons, room_btu_list = building_load_calc(rooms)
 economizer_runtime,economizer_runtime_percent = hourly_df_enthalpy_columns(hourly_dataframe)
 best_kw, best_group = optimize_chillers(building_load_tons, chillers)
 hourly_dataframe,cost_w_economizer,cost_wo_economizer,annual_savings,payback_months = calculate_costs_dataframe(hourly_dataframe,best_kw,costperkwh,cost_of_economizer)
+
 if best_group is None:
     st.error("COOLING REQUIREMENT EXCEEDS CHILLER CAPACITY")
 else:
     total_tons, daily_cost, monthly_cost, utilization = calculate(
         best_group, best_kw, costperkwh, building_load_tons
     )
+
     redundancy_check(best_group, building_load_tons)
     system_flags(total_tons, building_load_tons)
-    print_all(best_group, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,cost_w_economizer,cost_wo_economizer,payback_months,economizer_runtime,economizer_runtime_percent)
-    
+
+    print_all(best_group, total_tons, daily_cost, monthly_cost, utilization, building_load_tons,
+              cost_w_economizer,cost_wo_economizer,payback_months,
+              economizer_runtime,economizer_runtime_percent)
+
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
-    csv = hourly_dataframe.to_csv(index=False)
-    st.download_button(
-    label="Download Weather Data",
-    data=csv,
-    file_name="weather_data.csv",
-    mime="text/csv"
 )
