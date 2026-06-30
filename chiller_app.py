@@ -402,8 +402,3 @@ else:
     
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
-
-
-
-
-
