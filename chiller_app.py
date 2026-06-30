@@ -51,13 +51,54 @@ city_coords = {
     "Mumbai": (19.0760, 72.8777),
     "Cape Town": (-33.9249, 18.4241)
 }
-
+electricity_cost = {
+    "Grand Rapids": 0.14,
+    "Chicago": 0.17,
+    "New York": 0.22,
+    "Miami": 0.15,
+    "Oymyakon": 0.18,
+    "Detroit": 0.15,
+    "Los Angeles": 0.25,
+    "Dallas": 0.13,
+    "Houston": 0.13,
+    "Phoenix": 0.12,
+    "Atlanta": 0.14,
+    "Seattle": 0.11,
+    "Denver": 0.13,
+    "Minneapolis": 0.12,
+    "Boston": 0.21,
+    "Washington DC": 0.19,
+    "Las Vegas": 0.12,
+    "San Francisco": 0.28,
+    "San Diego": 0.26,
+    "Charlotte": 0.13,
+    "Nashville": 0.12,
+    "London": 0.34,
+    "Paris": 0.22,
+    "Berlin": 0.30,
+    "Rome": 0.28,
+    "Madrid": 0.24,
+    "Amsterdam": 0.29,
+    "Tokyo": 0.31,
+    "Seoul": 0.18,
+    "Beijing": 0.10,
+    "Singapore": 0.24,
+    "Sydney": 0.27,
+    "Melbourne": 0.26,
+    "Toronto": 0.13,
+    "Vancouver": 0.12,
+    "Mexico City": 0.12,
+    "São Paulo": 0.15,
+    "Dubai": 0.10,
+    "Mumbai": 0.09,
+    "Cape Town": 0.14
+}
 city = st.selectbox("Select Location", list(city_coords.keys()))
 
-lat,long = city_coords[city]
+lat,long,cost = city_coords[city]
 start_date = st.date_input("Start date")
 end_date = st.date_input("End date")
-costperkwh = st.number_input("Cost per kWh?")
+costperkwh = electricity_cost[city]
 cost_of_economizer = st.number_input("Cost of Economizer Upgrade?")
 
 
@@ -361,3 +402,8 @@ else:
     
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
+
+
+
+
+
