@@ -95,7 +95,7 @@ electricity_cost = {
 }
 city = st.selectbox("Select Location", list(city_coords.keys()))
 
-lat,long,cost = city_coords[city]
+lat,long = city_coords[city]
 start_date = st.date_input("Start date")
 end_date = st.date_input("End date")
 costperkwh = electricity_cost[city]
