@@ -402,3 +402,32 @@ else:
     
     st.subheader("Weather")
     st.dataframe(hourly_dataframe)
+
+    final_df = hourly_dataframe.copy()
+
+    final_df["date_only"] = final_df["date"].dt.date
+    
+    
+    daily_summary = (
+        final_df.groupby("date_only")
+        .agg(
+            avg_temperature=("temperature_2m", "mean"),
+            max_temperature=("temperature_2m", "max"),
+            min_temperature=("temperature_2m", "min"),
+            avg_humidity=("relative_humidity_2m", "mean"),
+            daily_cost_economizer=("total_cost_econ", "sum"),
+            daily_cost_base=("total_cost_base", "sum"),
+            economizer_hours=("economizer_key", lambda x: (x == 0).sum())
+        )
+        .reset_index()
+    )
+    
+    
+    daily_summary["daily_savings"] = (
+        daily_summary["daily_cost_base"] -
+        daily_summary["daily_cost_economizer"]
+    )
+    
+    
+    st.subheader("Daily Summary")
+    st.dataframe(daily_summary)
