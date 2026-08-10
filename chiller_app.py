@@ -96,8 +96,8 @@ electricity_cost = {
 city = st.selectbox("Select Location", list(city_coords.keys()))
 
 lat,long = city_coords[city]
-start_date = st.date_input("Start date")
-end_date = st.date_input("End date")
+start_date = st.date_input("Weather Start Date")
+end_date = st.date_input("Weather End date")
 costperkwh = electricity_cost[city]
 cost_of_economizer = st.number_input("Cost of Economizer Upgrade?")
 
